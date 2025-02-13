@@ -1,0 +1,16 @@
+gsutil cp gs://cloud-training/cepf/cepf023/cepf023-app-code.zip . && unzip cepf023-app-code.zip
+ 
+ls -l cepf023-app-code.zip
+ 
+gcloud services enable cloudbuild.googleapis.com
+ 
+gcloud artifacts repositories create cepf-repo \
+    --repository-format=docker \
+    --location=us-west1 \
+    --description="Repository for containerized applications"
+
+gcloud artifacts repositories list --location=<DEFAULT_REGION>
+
+create a cloudbuild.yaml
+
+gcloud builds submit --region=<us-west1> --config=cloudbuild.yaml .

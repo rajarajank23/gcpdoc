@@ -1,0 +1,11 @@
+docker push gcr.io/[YOUR_PROJECT_ID]/[YOUR_IMAGE_NAME]:[TAG]
+
+
+docker push gcr.io/qwiklabs-gcp-00-821749ecd55d/nginxdemos/hello:latest .
+
+
+gcloud run deploy cepf-dev-service \
+  --image gcr.io/qwiklabs-gcp-00-821749ecd55d/nginxdemos/hello:latest \
+  --region=us-east1 \
+  --platform=managed \
+  --allow-unauthenticated

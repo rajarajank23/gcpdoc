@@ -1,0 +1,107 @@
+
+
+curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
+chmod +x skaffold
+sudo mv skaffold /usr/local/bin
+
+gsutil cp gs://cloud-training/cepf/cepf023/cepf023-app-code.zip . && unzip cepf023-app-code.zip
+ 
+ls -l cepf023-app-code.zip
+ 
+gcloud services enable cloudbuild.googleapis.com
+ 
+gcloud artifacts repositories create cepf-repo \
+    --repository-format=docker \
+    --location=us-west1 \
+    --description="Repository for containerized applications"
+
+
+gcloud artifacts repositories list --location=<DEFAULT_REGION>
+ 
+
+ 
+
+gcloud auth configure-docker
+
+
+gcloud builds submit --region=<us-west1> --config=cloudbuild.yaml .
+
+ docker push us-west1-docker.pkg.dev/qwiklabs-gcp-03-15a149d0ef29/cepf:v1
+
+docker push cepf-repo/qwiklabs-gcp-03-15a149d0ef29/demoapp
+
+docker build -t cepf-repo/qwiklabs-gcp-03-15a149d0ef29/innovaapp:latest .
+
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/IMAGE_NAME:TAG', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/IMAGE_NAME:TAG']
+
+images:
+  - 'REGION-docker.pkg.dev/PROJECT_ID/REPOSITORY_NAME/IMAGE_NAME:TAG'
+
+cat cloudbuild.yaml 
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'us-west1-docker.pkg.dev/qwiklabs-gcp-02-55d4b784017a/cepf-repo/appdemo:latest', '.']
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'us-west1-docker.pkg.dev/qwiklabs-gcp-02-55d4b784017a/cepf-repo/appdemo:latest']
+
+images:
+  - 'us-west1-docker.pkg.dev/qwiklabs-gcp-02-55d4b784017a/cepf-repo/appdemo:latest'
+
+gcloud builds submit --config=cloudbuild.yaml
+
+93869184401
+
+
+gcloud projects add-iam-policy-binding qwiklabs-gcp-02-55d4b784017a \
+    --member="serviceAccount:93869184401@student-01-ab48494ea329@qwiklabs.net" \
+    --role="roles/artifactregistry.writer"
+
+
+
+
+
+gcloud projects get-iam-policy qwiklabs-gcp-02-55d4b784017a \
+    --flatten="bindings[].members" \
+    --format="table(bindings.members)" \
+    --filter="bindings.members:cloudbuild.gserviceaccount.com"
+
+
+
+
+
+gcloud projects get-iam-policy qwiklabs-gcp-02-55d4b784017a \
+    --flatten="bindings[].members" \
+    --format="table(bindings.members)" \
+    --filter="bindings.members:cloudbuild.gserviceaccount.com"
+
+
+
+
+
+gcloud projects add-iam-policy-binding qwiklabs-gcp-02-55d4b784017a \
+    --member="serviceAccount:93869184401@cloudbuild.gserviceaccount.com" \
+    --role="roles/artifactregistry.writer"
+
+
+gcloud run services add-iam-policy-binding cepf-dev-service \
+  --region us-west1 \
+  --member="allUsers" \
+  --role="roles/run.invoker"
+Updated IAM policy for service [cepf-dev-service].
+bindings:
+- members:
+  - allUsers
+  role: roles/run.invoker
+etag: BwYsmmgea_Q=
+version: 1
+user@cepf-workstation:~/cepf023-app-code$ gcloud run services add-iam-policy-binding cepf-dev-service \
+  --member="allUsers" \
+  --role="roles/run.invoker" \
+  --region=us-west1 \
+  --project=qwiklabs-gcp-02-55d4b784017a
+

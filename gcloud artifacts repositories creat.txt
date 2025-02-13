@@ -1,0 +1,17 @@
+gcloud artifacts repositories create cepf-repo \
+    --repository-format=docker \
+    --location=us-central1 \
+    --description="Repository for containerized applications"
+
+4/0ASVgi3LQ8QxayvRGODBBSoBpDXjNA605_YcflamCdDA9z6ko4MSB4DHX0BOnnE1QPtvetQ
+
+gcloud artifacts repositories create cepf-repo \
+    --repository-format=DOCKER \
+    --location=us-central1 \
+    --description="Artifact Registry for app_innova"
+
+gcloud deploy releases create cepf-release-001 \
+  --delivery-pipeline=cepf-run-app-pipeline \
+  --region=us-west1
+
+gcloud config set project qwiklabs-gcp-04-77aee03a75e1
